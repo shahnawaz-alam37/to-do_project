@@ -13,17 +13,23 @@ def home(request):
         title = request.POST.get('title')
         task = request.POST.get('task')
         # date=datetime.today()
-        user_task = Task_db(title=title, task=task, date=datetime.today())
-        user_task.save()
-        messages.success(request,"New task added successfully!")
+        if (title and task)=="":
+            messages.success(request,"Field Are empty! Add Somthing 😋")
+        else:
+            user_task = Task_db(title=title, task=task, date=datetime.today())
+            user_task.save()
+            messages.success(request,"New task added successfully!")
     return render(request,'index.html')
 
 def task(request):
     mydata = Task_db.objects.all().values()
     template = loader.get_template('index.html')
+    
     context = {
         'mymembers': mydata,
     }
+    if(len(mydata)==0):
+        messages.success(request,"There Is no task Added 😢")
     return render(request,'index.html', context)
 
 def delete(request, list_id):
